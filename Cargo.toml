@@ -1,0 +1,9 @@
+[package]
+name = "rcomps"
+version = "0.1.0"
+licence = "Apache-2.0/MIT"
+authors = ["Jim <d.f.hilliard@gmail.com>"]
+edition = "2018"
+
+[dev-dependencies]
+compiletest_rs = "0.5.0"
