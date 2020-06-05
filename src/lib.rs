@@ -39,14 +39,15 @@ macro_rules! comp {
     // Tuple comprehension.
     {($target:tt for $id:ident in $iterable:tt $(if $cond:expr)?)} => {{
         // ok, this actually does work.
-        let tup = (
-        $(
-          $x,
-        )*
-        );
+        let $id = 50;
+        // NOTE: We can use $( $capturname, )* to build
+        // a tuple.
+        let tup = ($id,);
+
         tup
     }};
     ($_:tt) => {
+        // TODO: Improve report.
         compile_error!("Unable to parse expression.");
     }
 }
