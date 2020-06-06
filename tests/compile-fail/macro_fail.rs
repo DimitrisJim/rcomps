@@ -20,4 +20,9 @@ fn empty_comp(){
     comp![()]; //~ ERROR Unable to parse expression.
 }
 
+fn need_ident_for_for(){
+    comp!([20 for 30 in 40]);
+    //~^ ERROR An identifier is required in the 'for ident in it' clause.
+}
+
 fn main() {}

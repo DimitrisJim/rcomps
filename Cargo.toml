@@ -1,9 +1,15 @@
 [package]
 name = "rcomps"
 version = "0.1.0"
-licence = "Apache-2.0/MIT"
+licence = "MIT OR Apache-2.0"
 authors = ["Jim <d.f.hilliard@gmail.com>"]
 edition = "2018"
+readme = 'README.md'
+repository = 'https://github.com/DimitrisJim/rcomps'
+description = "A macro that implements comprehensions."
+documentation = "https://docs.rs/rcomps"
+keywords = ["macro"]
+publish = false
 
 [dev-dependencies]
 compiletest_rs = "0.5.0"
