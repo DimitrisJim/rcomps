@@ -3,6 +3,12 @@ extern crate compiletest_rs as compiletest;
 use std::path::PathBuf;
 
 fn run_mode(mode: &'static str, custom_dir: Option<&'static str>) {
+    // NOTES:
+    // - clean_rmeta seems to trigger a recompilation each time
+    // - link_deps fails on macos. see:
+    // https://github.com/laumann/compiletest-rs/issues/179
+    // config.link_deps();
+
     let mut config = compiletest::Config::default();
     let cfg_mode = mode.parse().expect("Invalid mode");
 
@@ -10,13 +16,7 @@ fn run_mode(mode: &'static str, custom_dir: Option<&'static str>) {
 
     let dir = custom_dir.unwrap_or(mode);
     config.src_base = PathBuf::from(format!("tests/{}", dir));
-    config.link_deps();
-
-    // NOTE: clean_rmeta seems to trigger a recompilation each time
-    // cargo test is executed.
-    // TODO: Is it necessary?
-    // config.clean_rmeta();
-
+    config.target_rustcflags = Some("-L target/debug/deps".to_string());
     compiletest::run_tests(&config);
 }
 

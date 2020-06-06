@@ -16,7 +16,8 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        
+
+    # TODO: Add a linting step?
     steps:
     - uses: actions/checkout@v2
     - name: Build
