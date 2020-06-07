@@ -2,14 +2,44 @@
 //!
 //! The form (I want) supported is
 //!
-//!  comp!([expr for ident in expr if expr])
+//!  comp!([for ident in expr => expr; if expr])
 
 // NOTE: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
 
+
 /// Macro documentation.
 #[macro_export]
 macro_rules! comp {
+    // Vector comp
+    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?]) => {
+        for _todo in $($it)+{
+            println!("{}", "gotcha vec!");
+        }
+    };
+    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?}) => {
+        println!("{}", "gotcha set!");
+    };
+    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {
+        println!("{}", "gotcha tup!");
+    };
+    ({for $fid:ident in $($it:expr)+ => $($key:expr)+, $($value:expr)+ $(; if $($cond:expr)+)?}) => {
+        println!("{}", "gotcha tup!");
+    };
+
+    () => {
+        compile_error!("Empty expression.");
+    };
+    ($_:tt) => {
+        // TODO: Improve report.
+        compile_error!("Unable to parse expression.");
+    }
+}
+
+
+/// Keep around (for a bit).
+#[allow(unused_macros)]
+macro_rules! comp_old {
     // Internal rules.
     // ===============
     // TODO: Any way we can also report what we got?
@@ -90,27 +120,5 @@ macro_rules! comp {
     ($_:tt) => {
         // TODO: Improve report.
         compile_error!("Unable to parse expression.");
-    }
-}
-
-/// ok. we have ambiguity problems when implementing comp and trying to use
-/// many munchers. literals like 'for' and 'if' get munched. I thought they wouldn't.
-/// an expr muncher isn't possible, so tt is really the only option.
-///
-/// Because of that, I'll change the format. it will now be:
-/// [for ident in expr+ => expr+; if expr+]
-/// this way we'll use allowed symbols after expressions while being able to group them
-/// all where they need to be.
-#[macro_export]
-macro_rules! comp_new {
-    () => {
-        compile_error!("Unable to parse expression.");
-    };
-    ($_:tt) => {
-        // TODO: Improve report.
-        compile_error!("Unable to parse expression.");
-    };
-    ($($ex:expr)* ; $($rest:tt)*) => {
-        println!();
     }
 }
