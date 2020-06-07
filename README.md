@@ -7,7 +7,7 @@ What I would ideally like this to be able to do:
 Coarse code sample I'd like to support:
 
 ```rust
-let v = comp![[expr for expr in <iterable>]];
+let v = comp!([for expr in <iterable> => expr; if expr]);
 ```
 
 
@@ -16,7 +16,7 @@ let v = comp![[expr for expr in <iterable>]];
 Coarse code sample I'd like to support:
 
 ```rust
-let m = comp![{key: value for expr in <iterable>}];
+let m = comp!({for expr in <iterable> => expr, expr; if expr});
 ```
 
 Having `:` as the separator isn't required. `(key, value)` looks 
@@ -27,7 +27,7 @@ like it could also work.
 Coarse code sample I'd like to support:
 
 ```rust
-let s = comp![{expr for expr in <iterable>}];
+let s = comp!({expr for expr in <iterable> => expr; if expr});
 ```
 
 
@@ -36,7 +36,7 @@ let s = comp![{expr for expr in <iterable>}];
 Coarse code sample I'd like to support:
 
 ```rust
-let t = comp![(expr for expr in <iterable>)];
+let t = comp!((for expr in <iterable> => expr; if expr));
 ```
 
 ### Notes:
