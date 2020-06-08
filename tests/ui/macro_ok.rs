@@ -34,9 +34,7 @@ fn test_ok_it(){
     // todo: merge with test_ok_range_forms?
     let cl = || {vec![1, 2, 3]};
     apply_pattern!(for i in cl() => 0);
-    comp!({for i in cl() => 0, 0})
-
-
+    comp!({for i in cl() => 0, 0});
 }
 
 /// Test that the if clause can capture expressions correctly.

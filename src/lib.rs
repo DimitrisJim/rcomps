@@ -3,43 +3,70 @@
 //! The form (I want) supported is
 //!
 //!  comp!([for ident in expr => expr; if expr])
-
 // NOTE: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
-// TODO: Add a lazy comp! (note: can we?)
 
 /// Macro documentation.
 #[macro_export]
 macro_rules! comp {
-    // Notes:
-    // ======
-    // 1. Need to also think about unpacking identifiers.
+    // TODO: Can somehow handle ty we pass to allow VecDeque, LinkedList, etc
+    // TODO: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
+    // TODO: Create macro to generate the similar stuff for vec, set, map?
 
-    // Vector comp
-    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?]) => {
-        for _todo in $($it)+{
-            println!("{}", "gotcha vec!");
+    // Internal rules:
+    // ===============
+    //
+    // match_if: Returns true if no condition was passed else the condition.
+    (@match_if ()) => { true };
+    (@match_if $($cond:expr)+) => { $($cond)+ };
+
+    // Vector comprehension.
+    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ty)?) => {{
+        // Grab the condition.
+        let cond = comp!(@match_if ($($($cond)+)?));
+        // Iterate through $it and build vector.
+        let mut res = Vec::new();
+        for $fid in $($it)+{
+            if cond {
+                res.push($($target)+);
+            }
         }
-    };
-    // Set comp
-    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?}) => {
-        println!("{}", "gotcha set!");
-    };
-    // Tuple comp
-    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {
-        println!("{}", "gotcha tup!");
-    };
-    // Map comp
-    ({for $fid:ident in $($it:expr)+ => $($key:expr)+, $($value:expr)+ $(; if $($cond:expr)+)?}) => {
-        println!("{}", "gotcha tup!");
-    };
-    // Catch empty invocation.
+        res
+    }};
+    // Set comprehension.
+    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ty)?) => {{
+        // Grab the condition.
+        let cond = comp!(@match_if ($($($cond)+)?));
+        // Iterate through $it and build set.
+        use std::collections::HashSet;
+        let mut res = HashSet::new();
+        for $fid in $($it)+{
+                res.insert($($target)+);
+        }
+        res
+    }};
+    // Map comprehension.
+    ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ty)?) => {{
+        // Grab the condition.
+        let cond = comp!(@match_if ($($($cond)+)?));
+        // Iterate through $it and build map.
+        use std::collections::HashMap;
+        let mut res = HashMap::new();
+        for $fid in $($it)+{
+            res.insert($($k)+, $($v)+);
+        }
+        res
+    }};
+    // Tuple comprehension.
+    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ty)?) => {{
+        todo!();
+    }};
+    // Otras
     () => {
         compile_error!("Empty expression.");
     };
-    // Catch everything else.
     ($_:tt) => {
-        // TODO: How can I improve reporting of errors?
+        // TODO: Improve report.
         compile_error!("Unable to parse expression.");
     }
 }
