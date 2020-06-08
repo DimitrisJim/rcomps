@@ -6,32 +6,40 @@
 
 // NOTE: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
-
+// TODO: Add a lazy comp! (note: can we?)
 
 /// Macro documentation.
 #[macro_export]
 macro_rules! comp {
+    // Notes:
+    // ======
+    // 1. Need to also think about unpacking identifiers.
+
     // Vector comp
     ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?]) => {
         for _todo in $($it)+{
             println!("{}", "gotcha vec!");
         }
     };
+    // Set comp
     ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?}) => {
         println!("{}", "gotcha set!");
     };
+    // Tuple comp
     ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {
         println!("{}", "gotcha tup!");
     };
+    // Map comp
     ({for $fid:ident in $($it:expr)+ => $($key:expr)+, $($value:expr)+ $(; if $($cond:expr)+)?}) => {
         println!("{}", "gotcha tup!");
     };
-
+    // Catch empty invocation.
     () => {
         compile_error!("Empty expression.");
     };
+    // Catch everything else.
     ($_:tt) => {
-        // TODO: Improve report.
+        // TODO: How can I improve reporting of errors?
         compile_error!("Unable to parse expression.");
     }
 }
