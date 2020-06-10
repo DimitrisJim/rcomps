@@ -3,16 +3,20 @@
 //! The form (I want) supported is
 //!
 //!  comp!([for ident in expr => expr; if expr])
+//!
+//! TODO: Expand.
+
 // NOTE: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
 
 /// Macro documentation.
+/// TODO: Expand
 #[macro_export]
 macro_rules! comp {
     // TODO: Can somehow handle ty we pass to allow VecDeque, LinkedList, etc
     // TODO: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
     // TODO: Create macro to generate the similar stuff for vec, set, map?
-
+    // TODO: We could also just use iterators throughout.
     // Internal rules:
     // ===============
     //
@@ -20,10 +24,32 @@ macro_rules! comp {
     (@match_if ()) => { true };
     (@match_if $($cond:expr)+) => { $($cond)+ };
 
+    // match_type <type>: Matches ident. If one isn't provided, defaults are
+    // used. If they are, pass them through.
+    (@match_type vec ()) => { Vec<_> };
+    (@match_type vec ($tp:ident)) => { $tp<_> };
+
+    (@match_type set ()) => {
+        // todo: ok, for now, HashSet is not available in prelude.
+        use std::collections::HashSet;
+        HashSet<_>
+    };
+    (@match_type set ($tp:ident)) => { $tp<_> };
+
+    (@match_type map ()) => {
+        // todo: ok, for now, HashMap is not available in prelude.
+        use std::collections::HashMap;
+        HashMap<_>
+    };
+    (@match_type map ($tp:ident)) => { $tp<_> };
+
+
     // Vector comprehension.
-    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ty)?) => {{
+    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ident)?) => {{
+        use std::iter::FromIterator;
         // Grab the condition.
         let cond = comp!(@match_if ($($($cond)+)?));
+
         // Iterate through $it and build vector.
         let mut res = Vec::new();
         for $fid in $($it)+{
@@ -31,127 +57,53 @@ macro_rules! comp {
                 res.push($($target)+);
             }
         }
-        res
+        let mut r = <comp!(@match_type vec ($($tp)?))>::from_iter(res.drain(..));
+        r
     }};
     // Set comprehension.
-    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ty)?) => {{
+    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
+        // Bring in required names.
+        use std::iter::FromIterator;
+        use std::collections::HashSet;
+
         // Grab the condition.
         let cond = comp!(@match_if ($($($cond)+)?));
         // Iterate through $it and build set.
-        use std::collections::HashSet;
         let mut res = HashSet::new();
         for $fid in $($it)+{
+            if cond {
                 res.insert($($target)+);
+            }
         }
         res
+        // todo: return based on tp
     }};
     // Map comprehension.
-    ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ty)?) => {{
+    ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
+        // Bring in required names.
+        use std::iter::FromIterator;
+        use std::collections::HashMap;
+
         // Grab the condition.
         let cond = comp!(@match_if ($($($cond)+)?));
         // Iterate through $it and build map.
-        use std::collections::HashMap;
         let mut res = HashMap::new();
         for $fid in $($it)+{
-            res.insert($($k)+, $($v)+);
+            if cond {
+                res.insert($($k)+, $($v)+);
+            }
         }
         res
+        // todo: return based on tp
     }};
     // Tuple comprehension.
-    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ty)?) => {{
-        todo!();
+    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ident)?) => {{
+        ();
     }};
     // Otras
     () => {
         compile_error!("Empty expression.");
     };
-    ($_:tt) => {
-        // TODO: Improve report.
-        compile_error!("Unable to parse expression.");
-    }
-}
-
-
-/// Keep around (for a bit).
-#[allow(unused_macros)]
-macro_rules! comp_old {
-    // Internal rules.
-    // ===============
-    // TODO: Any way we can also report what we got?
-    //
-    // need_id: Catch if an id isn't supplied for for clause.
-    (@need_id $id:ident) => {$id};
-    (@need_id $other:tt) => {
-        compile_error!("An identifier is required in the 'for ident in it' clause.");
-    };
-
-    // as_expr: Requiring an expression for target and iterable.
-    (@target_as_expr $e:expr) => {$e};
-    (@target_as_expr $other:tt) => {
-            compile_error!("Target must be a valid expression.");
-    };
-    // match_iterator: Match either single expression denoting an
-    // iterator or a x..y range.
-    (@match_iterator $it:expr) => {$it};
-    // TODO: Match all cases of range. Can prob call match_range in here.
-    (@match_iterator $begin:tt .. $end:tt) => {
-        $begin..$end
-    };
-    (@match_iterator) => {
-        compile_error!("An iterator must be supplied.");
-    };
-    // unpack_target: unpacks the target munch to its constituent parts.
-    (@unpack_target $todo:tt) => {
-        $todo
-    };
-    // match_range: match the different range formats.
-    (@match_range $todo:tt) => {
-        $todo
-    };
-
-    // Notes:
-    // ------
-    // - Double brackets around match arm are actually needed. W/o let isn't allowed (why?)
-    // - $target and iterable are tt. expr can't be followed by things like 'for'.
-
-    // Dict comprehension. todo: update based on vec
-    ({$key:tt : $value:tt for $id:tt in $($iterable:tt)* $(if $cond:expr)?}) => {{
-        let comp!(@need_id $id) = 30;
-    }};
-
-    // Set comp. todo: update based on vec
-    ({$target:tt for $id:tt in $($iterable:tt)* $(if $cond:expr)?}) => {{
-        let comp!(@need_id $id) = 30;
-    }};
-
-    // Vector comprehension.
-    //
-    // iterable uses TT bundler to grab as much as it can. then we try and
-    // filter it with match_iterator (NOTE: Change it to use `+`
-    // target should also use TT bundler, [1+2+...+n for _ in _] is parse error.
-    ([$target:tt for $id:tt in $($iterable:tt)* $(if $($cond:expr)*)?]) => {{
-        // TODO: Do we really need id? Since it won't get leaked, we can just ignore it.
-        // TODO: But, can't remove let, we get complaints it isn't found in scope.
-        let comp!(@need_id $id) = 30;
-        comp!(@target_as_expr $target);
-
-        let mut vec = Vec::new();
-        for _todo in comp!(@match_iterator $($iterable)*){
-            vec.push(_todo);
-        }
-        vec
-
-    }};
-
-    // Tuple comprehension. todo: update based on vec
-    {($target:tt for $id:tt in $($iterable:tt)* $(if $cond:expr)?)} => {{
-        let comp!(@need_id $id) = 30;
-        // NOTE: We can use $( $capturname, )* to build
-        // a tuple.
-        let tup = ($id,);
-
-        tup
-    }};
     ($_:tt) => {
         // TODO: Improve report.
         compile_error!("Unable to parse expression.");
