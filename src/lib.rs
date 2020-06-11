@@ -13,10 +13,11 @@
 /// TODO: Expand
 #[macro_export]
 macro_rules! comp {
-    // TODO: Can somehow handle ty we pass to allow VecDeque, LinkedList, etc
-    // TODO: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
-    // TODO: Create macro to generate the similar stuff for vec, set, map?
-    // TODO: We could also just use iterators throughout.
+    // note: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
+    // note: Create macro to generate the similar stuff for vec, set, map?
+    // note: We could also just use iterators throughout.
+    // fixme: Any type can be passed as tp, need to restrain these.
+
     // Internal rules:
     // ===============
     //
@@ -30,15 +31,13 @@ macro_rules! comp {
     (@match_type vec ($tp:ident)) => { $tp<_> };
 
     (@match_type set ()) => {
-        // todo: ok, for now, HashSet is not available in prelude.
-        use std::collections::HashSet;
+        // note: HashSet is brought into scope in the rule.
         HashSet<_>
     };
     (@match_type set ($tp:ident)) => { $tp<_> };
 
     (@match_type map ()) => {
-        // todo: ok, for now, HashMap is not available in prelude.
-        use std::collections::HashMap;
+        // note: HashMap is brought into scope in the rule.
         HashMap<_>
     };
     (@match_type map ($tp:ident)) => { $tp<_> };
@@ -47,12 +46,13 @@ macro_rules! comp {
     // Vector comprehension.
     ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ident)?) => {{
         use std::iter::FromIterator;
-        // Grab the condition.
-        let cond = comp!(@match_if ($($($cond)+)?));
 
         // Iterate through $it and build vector.
         let mut res = Vec::new();
         for $fid in $($it)+{
+            // Grab the condition.
+            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
+            let cond = comp!(@match_if ($($($cond)+)?));
             if cond {
                 res.push($($target)+);
             }
@@ -66,17 +66,20 @@ macro_rules! comp {
         use std::iter::FromIterator;
         use std::collections::HashSet;
 
-        // Grab the condition.
-        let cond = comp!(@match_if ($($($cond)+)?));
         // Iterate through $it and build set.
         let mut res = HashSet::new();
         for $fid in $($it)+{
+            // Grab the condition.
+            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
+            let cond = comp!(@match_if ($($($cond)+)?));
+
             if cond {
                 res.insert($($target)+);
             }
         }
-        res
-        // todo: return based on tp
+        let mut r = <comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
+        r
+
     }};
     // Map comprehension.
     ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
@@ -84,11 +87,12 @@ macro_rules! comp {
         use std::iter::FromIterator;
         use std::collections::HashMap;
 
-        // Grab the condition.
-        let cond = comp!(@match_if ($($($cond)+)?));
         // Iterate through $it and build map.
         let mut res = HashMap::new();
         for $fid in $($it)+{
+            // Grab the condition.
+            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
+            let cond = comp!(@match_if ($($($cond)+)?));
             if cond {
                 res.insert($($k)+, $($v)+);
             }
@@ -98,6 +102,7 @@ macro_rules! comp {
     }};
     // Tuple comprehension.
     ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ident)?) => {{
+        // fixme: Actually do things.
         ();
     }};
     // Otras
