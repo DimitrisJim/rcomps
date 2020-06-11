@@ -38,9 +38,9 @@ macro_rules! comp {
 
     (@match_type map ()) => {
         // note: HashMap is brought into scope in the rule.
-        HashMap<_>
+        HashMap<_, _>
     };
-    (@match_type map ($tp:ident)) => { $tp<_> };
+    (@match_type map ($tp:ident)) => { $tp<_, _> };
 
 
     // Vector comprehension.
@@ -79,7 +79,6 @@ macro_rules! comp {
         }
         let mut r = <comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
         r
-
     }};
     // Map comprehension.
     ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
@@ -97,8 +96,8 @@ macro_rules! comp {
                 res.insert($($k)+, $($v)+);
             }
         }
-        res
-        // todo: return based on tp
+        let mut r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
+        r
     }};
     // Tuple comprehension.
     ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ident)?) => {{
