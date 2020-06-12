@@ -1,34 +1,85 @@
 ## rcomps
 
-What I would ideally like this to be able to do:
+A `macro_rules` macro to populate collection from a comprehension. 
 
 #### Vector comprehensions
 
-Coarse code sample I'd like to support:
+Enclosed in brackets, by default generates a `Vec` with the elements 
+from the comprehension. The macro call:
 
 ```rust
-let v = comp!([for expr in <iterable> => expr; if expr]);
+let v = comp!([for ident in iterable => expr; if condexpr], collection_type);
 ```
 
+is roughly equivalent to:
 
+```rust 
+vector = Vec::new();
+for ident in iterable{
+    if condexpr {
+        vector.push(expr);
+    }
+}
+type::from_iter(vector.iter());
+```
+
+Collection type can be either one of `Vec`, `VecDeque` and `LinkedList`.
+
+Note: This is overview, certain optimizations (e.g preallocation based on iterator size) could be 
+performed.    
+    
 #### Mapping comprehensions
 
-Coarse code sample I'd like to support:
+Enclosed in curly brackets, by default generates a `HashMap` with the elements 
+from the comprehension. The macro call:
 
 ```rust
-let m = comp!({for expr in <iterable> => expr, expr; if expr});
+let m = comp!({for ident in iterable => keyexpr, valuexpr; if condexpr}, collection_type);
 ```
 
-Having `:` as the separator isn't required. `(key, value)` looks 
-like it could also work.
+is roughly equivalent to:
+
+```rust 
+hm = HashMap::new();
+for ident in iterable{
+    if condexpr {
+        hm.insert(keyexpr, valueexpr);
+    }
+}
+type::from_iter(hm.iter());
+```
+
+Collection type can be either one of `HashMap` or `BTreeMap`.
+
+Note: This is overview, certain optimizations (e.g preallocation based on iterator size) could be 
+performed.        
 
 #### Set comprehensions
 
-Coarse code sample I'd like to support:
+Enclosed in curly brackets, by default generates a `HashSet` with the elements 
+from the comprehension. Distinguished from map case by requiring a single `expr` (which should 
+be enclosed in parentheses if a tuple is needed). The macro call:
 
 ```rust
-let s = comp!({expr for expr in <iterable> => expr; if expr});
+let s = comp!({for ident in iterable => expr; if condexpr}, collection_type);
 ```
+
+is roughly equivalent to:
+
+```rust 
+hm = HashSet::new();
+for ident in iterable{
+    if condexpr {
+        hm.insert(expr);
+    }
+}
+type::from_iter(hm.iter());
+```
+
+Collection type can be either one of `HashSet` or `BTreeSet`.
+
+Note: This is overview, certain optimizations (e.g preallocation based on iterator size) could be 
+performed.        
 
 
 #### Tuple comprehensions
@@ -39,10 +90,13 @@ Coarse code sample I'd like to support:
 let t = comp!((for expr in <iterable> => expr; if expr));
 ```
 
+todo: still pending.
+
 ### Notes:
 
 Destroy this section eventually.
 
+ - Currently developed, not good to push to cargo.
  - Can't use procedural function-like macros. Need to use 
    `macro_rules` (function-like macros don't support use 
    in expressions, which we need.)

@@ -1,16 +1,106 @@
 //! Module documentation.
 //!
-//! The form (I want) supported is
+//! Provides `comp!`, a `macro_rules` macro that supports comprehensions for the collections in
+//! `std::collections`. All comprehensions follow a similar pattern:
 //!
-//!  comp!([for ident in expr => expr; if expr])
+//!  `for identifier in iterable => expression; if condition`
 //!
-//! TODO: Expand.
+//! Disambiguating between resulting collections can be done with a combination of:
+//!  - Grouping characters
+//!  - A collection type annotation
+//!
+//! ### Grouping Characters
+//!
+//! By using different grouping characters different resulting collections can be created. The
+//! three different bracket forms available for macros are used, namely square brackets `[]`,
+//! curly brackets `{}` and round brackets `()`:
+//!
+//!  - Square brackets `[]` result in Sequences
+//!  - Curly brackets `{}` result in Maps and Sets.
+//!  - Round brackets `()` result in a tuple.
+//!
+//! By default, `[]` result in a `Vec` and `{}` for sets into a `HashSet` and `HashMap` for maps.
+//! Tuples only have a single target type so a default type isn't applicable.
+//!
+//! ### Type Annotation
+//!
+//! Each of the grouping characters results in a default collection. If a different Sequence, Set
+//! or Map is desired. This can be placed after the enclosing brackets preceeded by a comma
+//! separator.
+//!
+//! ### Vector
+//!
+//! For vectors, square brackets are used as the grouping operator, the syntax used is as follows:
+//!
+//!  `comp!([for ident in iterable => expression; if condition], collection_type)`
+//!
+//! where `collection_type` is one of `Vec`, `VecDeque`, `LinkedList` (`Vec` is used by default).
+//!
+//! ### Tuple
+//!
+//! For tuples, round brackets are used as the grouping operator, the syntax used is as follows:
+//!
+//!  `comp!((for ident in iterable => expression; if condition))`
+//!
+//! no other types can be used.
+//!
+//! ### Set
+//!
+//! For sets, curly brackets are used as the grouping operator, the syntax used is as follows:
+//!
+//!  `comp!({for ident in iterable => expression; if condition}, collection_type)`
+//!
+//! where `collection_type` is one of `HashSet` and `BTreeSet` (`HashSet` is used by default).
+//!
+//! ### Map
+//!
+//! For maps, curly brackets are used as the grouping operator, the syntax used is as follows:
+//!
+//!  `comp!({for ident in iterable => keyexpr, valueexpr; if condition}, collection_type)`
+//!
+//! where `collection_type` is one of `HashTree` and `BTreeSet` (`HashTree` is used by default).
+//!
 
-// NOTE: Unfortunately, since procedural function-like macros cannot be used in an
+
+// note: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
 
-/// Macro documentation.
-/// TODO: Expand
+/// Creates a collection using a comprehension.
+///
+/// `comp!` implements a comprehension like facility for succinct imperative creation of collections.
+/// Four forms of the macro exist, each corresponding to a different type of collection:
+///
+/// ### Vector comprehensions
+///
+/// ```
+/// # #[macro_use] extern crate rcomps;
+/// # fn main(){
+/// let evens = comp!([for i in 0..=10 => i; if (i % 2) == 0]);
+/// assert_eq!(evens, vec![0, 2, 4, 6, 8, 10]);
+/// # }
+/// ```
+/// ### Tuple comprehensions
+///
+/// todo: pending.
+///
+/// ### Set comprehensions
+///
+/// ```
+/// # #[macro_use] extern crate rcomps;
+/// # fn main(){
+/// let check = comp!({for i in &[1, 2, 3, 4, 3, 2, 1] => i});
+/// # }
+/// ```
+///
+/// ### Map comprehensions
+///
+/// ```
+/// # #[macro_use] extern crate rcomps;
+/// # fn main(){
+/// let evens = comp!({for i in 0..=10 => i, i});
+/// # }
+/// ```
+///
 #[macro_export]
 macro_rules! comp {
     // note: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
@@ -100,7 +190,7 @@ macro_rules! comp {
         r
     }};
     // Tuple comprehension.
-    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?) $(, $tp:ident)?) => {{
+    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {{
         // fixme: Actually do things.
         ();
     }};
