@@ -8,8 +8,8 @@ use rcomps::comp;
 #[macro_use]
 macro_rules! apply_pattern {
     ($($pat:tt)*) => {
-        comp!(($($pat)*));  // vec
-        comp!([$($pat)*]);  // tup
+        // comp!(($($pat)*));  // note: uncomment if I find a way to implement tuple.
+        comp!([$($pat)*]);  // vec
         comp!({$($pat)*});  // set
     }
 }

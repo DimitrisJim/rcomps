@@ -81,22 +81,12 @@ Collection type can be either one of `HashSet` or `BTreeSet`.
 Note: This is overview, certain optimizations (e.g preallocation based on iterator size) could be 
 performed.        
 
-
-#### Tuple comprehensions
-
-Coarse code sample I'd like to support:
-
-```rust
-let t = comp!((for expr in <iterable> => expr; if expr));
-```
-
-todo: still pending.
-
 ### Notes:
 
 Destroy this section eventually.
 
  - Currently developed, not good to push to cargo.
+ - Tuples: can we statically define it?
  - Can't use procedural function-like macros. Need to use 
    `macro_rules` (function-like macros don't support use 
    in expressions, which we need.)

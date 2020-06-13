@@ -36,13 +36,11 @@ fn test_fail_no_it() {
 fn test_fail_bad_ident(){
     let c = || {42};
     comp!([for 40 in 1..2 => 30]);     //~ ERROR Unable to parse expression.
-    comp!((for 40 in 1..2 => 0));      //~ ERROR Unable to parse expression.
     comp!({for 40 in 1..2 => 0});      //~ ERROR Unable to parse expression.
     comp!({for 40 in 1..2 => 0, 0});   //~ ERROR Unable to parse expression.
 
     // Second error concerns mismatched types. TODO: Why is it raised?
     comp!([for (2 > 1) in 1..2 => 20]);     //~ ERROR Unable to parse expression.
-    comp!((for (2 > 1) in 1..2 => 20));     //~ ERROR Unable to parse expression.
     comp!({for (2 > 1) in 1..2 => 20});     //~ ERROR Unable to parse expression.
     comp!({for (2 > 1) in 1..2 => 20, 20}); //~ ERROR Unable to parse expression.
 
@@ -51,7 +49,6 @@ fn test_fail_bad_ident(){
 
     comp!([for r#self in 3..6 => 0]);       //~ ERROR `self` cannot be a raw identifier
     comp!({for r#self in 3..6 => 0});       //~ ERROR `self` cannot be a raw identifier
-    comp!((for r#self in 3..6 => 0));       //~ ERROR `self` cannot be a raw identifier
     comp!({for r#self in 3..6 => 0, 0});    //~ ERROR `self` cannot be a raw identifier
 }
 
@@ -78,7 +75,6 @@ fn test_sanity(){
 
     // Error for solo trailing greek question mark:
     comp!([for i in 1..2 => 0;]);      //~ ERROR Unable to parse expression.
-    comp!((for i in 1..2 => 0;));      //~ ERROR Unable to parse expression.
     comp!({for i in 1..2 => 0;});      //~ ERROR Unable to parse expression.
     comp!({for i in 1..2 => 0, 0;});   //~ ERROR Unable to parse expression.
 }

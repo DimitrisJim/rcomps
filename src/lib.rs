@@ -11,16 +11,13 @@
 //!
 //! ### Grouping Characters
 //!
-//! By using different grouping characters different resulting collections can be created. The
-//! three different bracket forms available for macros are used, namely square brackets `[]`,
-//! curly brackets `{}` and round brackets `()`:
+//! By using different grouping characters different resulting collections can be created. Two
+//! different bracket forms are used, namely square brackets `[]`, and curly brackets `{}`.
 //!
 //!  - Square brackets `[]` result in Sequences
 //!  - Curly brackets `{}` result in Maps and Sets.
-//!  - Round brackets `()` result in a tuple.
 //!
 //! By default, `[]` result in a `Vec` and `{}` for sets into a `HashSet` and `HashMap` for maps.
-//! Tuples only have a single target type so a default type isn't applicable.
 //!
 //! ### Type Annotation
 //!
@@ -35,14 +32,6 @@
 //!  `comp!([for ident in iterable => expression; if condition], collection_type)`
 //!
 //! where `collection_type` is one of `Vec`, `VecDeque`, `LinkedList` (`Vec` is used by default).
-//!
-//! ### Tuple
-//!
-//! For tuples, round brackets are used as the grouping operator, the syntax used is as follows:
-//!
-//!  `comp!((for ident in iterable => expression; if condition))`
-//!
-//! no other types can be used.
 //!
 //! ### Set
 //!
@@ -79,9 +68,6 @@
 /// assert_eq!(evens, vec![0, 2, 4, 6, 8, 10]);
 /// # }
 /// ```
-/// ### Tuple comprehensions
-///
-/// todo: pending.
 ///
 /// ### Set comprehensions
 ///
@@ -189,11 +175,30 @@ macro_rules! comp {
         let mut r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
         r
     }};
-    // Tuple comprehension.
+    // Tuple comprehension; do not think this can actually be done.
+    /*
     ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {{
-        // fixme: Actually do things.
-        ();
+        // Iterate through $it and build intermediary vector.
+        let mut res = Vec::new();
+        for $fid in $($it)+{
+            // Grab the condition.
+            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
+            let cond = comp!(@match_if ($($($cond)+)?));
+            if cond {
+                res.push($($target)+);
+            }
+        }
+        comp!(@build_tuple res [0; ])
     }};
+    (@build_tuple ($v:expr) [($len:expr)*]) => {{
+        let mut _ind = 0;
+        let mut inc = || {_ind += 1; _ind}
+        let t = $(
+            $v[$len + inc()]
+        )*
+        t
+    }}
+    */
     // Otras
     () => {
         compile_error!("Empty expression.");
