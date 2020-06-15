@@ -3,8 +3,9 @@
 //! Provides `comp!`, a `macro_rules` macro that supports comprehensions for the collections in
 //! `std::collections`. All comprehensions follow a similar pattern:
 //!
-//!  `for identifier in iterable => expression; if condition`
-//!
+//! ```text
+//! for identifier in iterable => expression; if condition
+//! ```
 //! Disambiguating between resulting collections can be done with a combination of:
 //!  - Grouping characters
 //!  - A collection type annotation
@@ -29,23 +30,27 @@
 //!
 //! For vectors, square brackets are used as the grouping operator, the syntax used is as follows:
 //!
-//!  `comp!([for ident in iterable => expression; if condition], collection_type)`
-//!
+//! ```text
+//! comp!([for ident in iterable => expression; if condition], collection_type)
+//! ```
 //! where `collection_type` is one of `Vec`, `VecDeque`, `LinkedList` (`Vec` is used by default).
 //!
 //! ### Set
 //!
 //! For sets, curly brackets are used as the grouping operator, the syntax used is as follows:
 //!
-//!  `comp!({for ident in iterable => expression; if condition}, collection_type)`
-//!
+//! ```text
+//! comp!({for ident in iterable => expression; if condition}, collection_type)
+//! ```
 //! where `collection_type` is one of `HashSet` and `BTreeSet` (`HashSet` is used by default).
 //!
 //! ### Map
 //!
 //! For maps, curly brackets are used as the grouping operator, the syntax used is as follows:
 //!
-//!  `comp!({for ident in iterable => keyexpr, valueexpr; if condition}, collection_type)`
+//! ```text
+//! comp!({for ident in iterable => keyexpr, valueexpr; if condition}, collection_type)
+//! ```
 //!
 //! where `collection_type` is one of `HashTree` and `BTreeSet` (`HashTree` is used by default).
 //!
@@ -57,9 +62,19 @@
 /// Creates a collection using a comprehension.
 ///
 /// `comp!` implements a comprehension like facility for succinct imperative creation of collections.
-/// Four forms of the macro exist, each corresponding to a different type of collection:
+/// Three forms of the macro exist, each corresponding to a different type of collection:
 ///
 /// ### Vector comprehensions
+///
+/// Creates a vector using a comprehension. The syntax for creating a vector follows the
+/// following pattern:
+///
+/// ```text
+/// comp!([for ident in iterable => expression; if condition], collection_type)
+/// ```
+///
+/// Where `collection_type` is an optional type among `Vec`, `VecDeque` and `LinkedList` that
+/// controls the type of vector returned, by default, `Vec` is used. For example:
 ///
 /// ```
 /// # #[macro_use] extern crate rcomps;
@@ -69,21 +84,81 @@
 /// # }
 /// ```
 ///
+/// A similar collection of values contained in a `VecDeque` can be created with:
+///
+/// ```no_run
+/// # #[macro_use] extern crate rcomps;
+/// # use std::collections::VecDeque;
+/// # fn main() {
+/// let evens = comp!([for i in 0..=10 => i; if (i % 2) == 0], VecDeque);
+/// # }
+/// ```
+///
 /// ### Set comprehensions
+///
+/// Creates a set using a comprehension. The syntax for creating a set follows the
+/// following pattern:
+///
+/// ```text
+/// comp!({for ident in iterable => expression; if condition}, set_type)
+/// ```
+///
+/// Where `set_type` is an optional type among `HashSet` and `BTreeSet` that
+/// controls the type of set returned. By default, `HashSet` is used. For example:
 ///
 /// ```
 /// # #[macro_use] extern crate rcomps;
+/// # use std::collections::HashSet;
+/// # use std::iter::FromIterator;
 /// # fn main(){
-/// let check = comp!({for i in &[1, 2, 3, 4, 3, 2, 1] => i});
+/// let check = comp!({for i in vec![1, 2, 3, 4, 3, 2, 1] => i});
+/// let s = HashSet::from_iter(vec![1, 2, 3, 4].drain(..));
+/// assert_eq!(check, s);
+/// # }
+/// ```
+///
+/// A similar set of values contained in a `BTreeSet` can be created with:
+///
+/// ```no_run
+/// # #[macro_use] extern crate rcomps;
+/// # use std::collections::BTreeSet;
+/// # fn main() {
+/// let check = comp!({for i in vec![1, 2, 3, 4, 3, 2, 1] => i}, BTreeSet);
 /// # }
 /// ```
 ///
 /// ### Map comprehensions
 ///
+/// Creates a map using a comprehension. The syntax for creating a map follows the
+/// following pattern:
+///
+/// ```text
+/// comp!({for ident in iterable => key, value; if condition}, map_type)
+/// ```
+///
+/// Where `map_type` is an optional type among `HashMap` and `BTreeMap` that
+/// controls the type of map returned. By default, `HashMap` is used. For example:
+///
 /// ```
 /// # #[macro_use] extern crate rcomps;
+/// # use std::collections::HashMap;
+/// # use std::iter::FromIterator;
 /// # fn main(){
-/// let evens = comp!({for i in 0..=10 => i, i});
+/// let check = comp!({for i in 0..=10 => i, -i});
+/// let expected = HashMap::<i32, i32>::from_iter(
+///  (0..=10).map(|i| {(i, -i)})
+/// );
+/// assert_eq!(check, expected);
+/// # }
+/// ```
+///
+/// A similar map of values contained in a `BTreeMap` can be created with:
+///
+/// ```no_run
+/// # #[macro_use] extern crate rcomps;
+/// # use std::collections::BTreeMap;
+/// # fn main() {
+/// let check = comp!({for i in 0..=10 => i, -i}, BTreeMap);
 /// # }
 /// ```
 ///
@@ -175,36 +250,11 @@ macro_rules! comp {
         let mut r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
         r
     }};
-    // Tuple comprehension; do not think this can actually be done.
-    /*
-    ((for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?)) => {{
-        // Iterate through $it and build intermediary vector.
-        let mut res = Vec::new();
-        for $fid in $($it)+{
-            // Grab the condition.
-            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
-            let cond = comp!(@match_if ($($($cond)+)?));
-            if cond {
-                res.push($($target)+);
-            }
-        }
-        comp!(@build_tuple res [0; ])
-    }};
-    (@build_tuple ($v:expr) [($len:expr)*]) => {{
-        let mut _ind = 0;
-        let mut inc = || {_ind += 1; _ind}
-        let t = $(
-            $v[$len + inc()]
-        )*
-        t
-    }}
-    */
-    // Otras
+    // Otras:
     () => {
         compile_error!("Empty expression.");
     };
     ($_:tt) => {
-        // TODO: Improve report.
         compile_error!("Unable to parse expression.");
     }
 }
