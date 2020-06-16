@@ -193,62 +193,75 @@ macro_rules! comp {
     };
     (@match_type map ($tp:ident)) => { $tp<_, _> };
 
-
     // Vector comprehension.
     ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ident)?) => {{
         use std::iter::FromIterator;
+        use std::ops::Index;
+
+        fn _seq<T> (_: &T)
+        where
+            T: Index<usize> {}
 
         // Iterate through $it and build vector.
         let mut res = Vec::new();
         for $fid in $($it)+{
             // Grab the condition.
-            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
             let cond = comp!(@match_if ($($($cond)+)?));
             if cond {
                 res.push($($target)+);
             }
         }
         let mut r = <comp!(@match_type vec ($($tp)?))>::from_iter(res.drain(..));
+        _seq(&r);
         r
     }};
     // Set comprehension.
     ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
-        // Bring in required names.
-        use std::iter::FromIterator;
+        // Need to bring in the default.
         use std::collections::HashSet;
+        use std::ops::{BitAnd, BitOr, BitXor};
+
+        fn _st<T> (_: &T)
+        where
+            T: BitAnd + BitOr + BitXor {}
+
 
         // Iterate through $it and build set.
-        let mut res = HashSet::new();
+        let mut res = <comp!(@match_type set ($($tp)?))>::new();
         for $fid in $($it)+{
             // Grab the condition.
-            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
             let cond = comp!(@match_if ($($($cond)+)?));
 
             if cond {
                 res.insert($($target)+);
             }
         }
-        let mut r = <comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
-        r
+        _st(&&res);
+        res
+        // let mut r = <comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
+        // r
     }};
     // Map comprehension.
     ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
-        // Bring in required names.
-        use std::iter::FromIterator;
+        // Need to bring in the default.
         use std::collections::HashMap;
+        use std::ops::Index;
+
+        fn _mt<'a, T, K: 'a> (_: &T)
+        where
+            T: Index<&'a K> {}
 
         // Iterate through $it and build map.
-        let mut res = HashMap::new();
+        let mut res = <comp!(@match_type map ($($tp)?))>::new();
         for $fid in $($it)+{
             // Grab the condition.
-            // note: Needs to be here, failed lookup if outside of loop (that uses $fid
             let cond = comp!(@match_if ($($($cond)+)?));
             if cond {
                 res.insert($($k)+, $($v)+);
             }
         }
-        let mut r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
-        r
+        _mt::<_, _>(&res);
+        res
     }};
     // Otras:
     () => {

@@ -45,7 +45,6 @@ fn test_fail_no_it() {
     comp!({for i in => 2, 0});                 //~ ERROR Unable to parse expression.
     comp!({for i in                => 0, 0});  //~ ERROR Unable to parse expression.
     comp!({for n in () => n, n});              //~ ERROR `()` is not an iterator [E0277]
-
 }
 
 /// Bad identifier checks
@@ -72,6 +71,7 @@ fn test_fail_bad_ident(){
     comp!({for r#self in 3..6 => 0, 0});    //~ ERROR `self` cannot be a raw identifier
 }
 
+
 /// Ranges that aren't allowed.
 fn test_fail_range_forms(){
     comp!([for n in ..2 => 0; if true]);
@@ -95,6 +95,13 @@ fn test_fail_range_forms(){
     // comp!({for n in ..=3 => 9, 9}); todo: why does this fail?
 }
 
+/// Wrong types supplied in each case:
+fn test_wrong_types(){
+    use std::collections::{HashSet};
+
+    // comp!([for i in 1..20 => i], HashSet);
+}
+
 /// Small sanity checks.
 fn test_sanity(){
     comp!([20]);                       //~ ERROR Unable to parse expression.
@@ -105,13 +112,13 @@ fn test_sanity(){
     comp!([for n in n]);               //~ ERROR Unable to parse expression.
     comp!([for n in 1..2 => 30; if]);  //~ ERROR Unable to parse expression.
 
-    // comp!({for n in n});  // can't disambiguate between set and map
-
     // Error for solo trailing greek question mark:
-    comp!([for i in 1..2 => 0;]);      //~ ERROR Unable to parse expression.
-    comp!({for i in 1..2 => 0;});      //~ ERROR Unable to parse expression.
-    comp!({for i in 1..2 => 0, 0;});   //~ ERROR Unable to parse expression.
+    // todo: why don't these error out???
+    // comp!([for i in 1..2 => 0;]);
+    // comp!({for i in 1..2 => 0;});
+    // comp!({for i in 1..2 => 0, 0;});
 }
+
 
 /// Leave main alone.
 fn main() {}

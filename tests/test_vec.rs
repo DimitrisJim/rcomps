@@ -2,16 +2,9 @@
 /// is as expected.
 use rcomps::comp;
 use std::iter::FromIterator;
-use std::collections::{LinkedList, VecDeque};
+use std::collections::VecDeque;
 
 macro_rules ! create {
-    (ll $($exp:expr), *) => {{
-        let mut _ll = LinkedList::new();
-        $(
-            _ll.push_back($exp);
-        )*
-        _ll
-    }};
     (vd $($exp:expr),*) => {{
         let mut _vdeq = VecDeque::new();
          $(
@@ -77,33 +70,4 @@ fn test_vecdeq() {
         for i in comp!([for i in 0..5 => i], VecDeque) => i
     ], VecDeque);
     assert_eq!(v, comp![[for i in 0..5 => i], VecDeque]);
-}
-
-
-#[test]
-fn test_ll() {
-    // note: similar tests to test_vec
-    // create empty vector with empty iterator:
-    let mut v = comp!([for i in 0..0 => i], LinkedList);
-    assert_eq!(v, create!(ll ));
-
-    // Create empty vector with if false.
-    v = comp!([for i in 0..10 => i; if false], LinkedList);
-    assert_eq!(v, create![ll ]);
-
-    // create simple vectors for each case:
-    v = comp!([for i in 0..10 => i], LinkedList);
-    assert_eq!(v, LinkedList::from_iter(0..10));
-
-    // stupid filtering.
-    v = comp!([for i in 0..10 => i; if i == 4], LinkedList);
-    assert_eq!(v, create![ll 4]);
-    // create closure to filter.
-    let odds = |n| { n % 2 == 1};
-    v = comp!([for i in 0..10 => i; if odds(i)], LinkedList);
-    assert_eq!(v, create![ll 1, 3, 5, 7, 9]);
-
-    // pass comp as iter
-    v = comp!([for i in comp!([for i in 0..5 => i], LinkedList) => i], LinkedList);
-    assert_eq!(v, comp![[for i in 0..5 => i], LinkedList]);
 }
