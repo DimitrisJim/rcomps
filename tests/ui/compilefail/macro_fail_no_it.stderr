@@ -1,0 +1,127 @@
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:14:5
+   |
+14 |     comp!([for i in => 2]);                 //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:15:5
+   |
+15 |     comp!([for i in                => 0]);  //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:21:5
+   |
+21 |     comp!({for i in => 2});                 //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:22:5
+   |
+22 |     comp!({for i in                => 0});  //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:28:5
+   |
+28 |     comp!({for i in => 2, 0});                 //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_no_it.rs:29:5
+   |
+29 |     comp!({for i in                => 0, 0});  //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0423]: expected value, found struct `Vec`
+  --> $DIR/macro_fail_no_it.rs:13:21
+   |
+13 |     comp!([for i in Vec => 0]);             //~ ERROR expected value, found struct `Vec` [E0423]
+   |                     ^^^ did you mean `Vec { /* fields */ }`?
+
+error[E0423]: expected value, found struct `Vec`
+  --> $DIR/macro_fail_no_it.rs:20:21
+   |
+20 |     comp!({for i in Vec => 0});             //~ ERROR expected value, found struct `Vec` [E0423]
+   |                     ^^^ did you mean `Vec { /* fields */ }`?
+
+error[E0423]: expected value, found struct `Vec`
+  --> $DIR/macro_fail_no_it.rs:27:21
+   |
+27 |     comp!({for i in Vec => 0, 0});             //~ ERROR expected value, found struct `Vec` [E0423]
+   |                     ^^^ did you mean `Vec { /* fields */ }`?
+
+error[E0277]: `{integer}` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:12:21
+   |
+12 |     comp!([for n in 1 => 20]);              //~ ERROR `{integer}` is not an iterator [E0277]
+   |                     ^ `{integer}` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `{integer}`
+   = note: if you want to iterate between `start` until a value `end`, use the exclusive range syntax `start..end` or the inclusive range syntax `start..=end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `()` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:16:21
+   |
+16 |     comp!([for n in () => n]);              //~ ERROR `()` is not an iterator [E0277]
+   |                     ^^ `()` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `()`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `{integer}` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:19:21
+   |
+19 |     comp!({for n in 1 => 20});              //~ ERROR `{integer}` is not an iterator [E0277]
+   |                     ^ `{integer}` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `{integer}`
+   = note: if you want to iterate between `start` until a value `end`, use the exclusive range syntax `start..end` or the inclusive range syntax `start..=end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `()` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:23:21
+   |
+23 |     comp!({for n in () => n});              //~ ERROR `()` is not an iterator [E0277]
+   |                     ^^ `()` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `()`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `{integer}` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:26:21
+   |
+26 |     comp!({for n in 1 => 20, 0});              //~ ERROR `{integer}` is not an iterator [E0277]
+   |                     ^ `{integer}` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `{integer}`
+   = note: if you want to iterate between `start` until a value `end`, use the exclusive range syntax `start..end` or the inclusive range syntax `start..=end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `()` is not an iterator
+  --> $DIR/macro_fail_no_it.rs:30:21
+   |
+30 |     comp!({for n in () => n, n});              //~ ERROR `()` is not an iterator [E0277]
+   |                     ^^ `()` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `()`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error: aborting due to 15 previous errors
+
+Some errors have detailed explanations: E0277, E0423.
+For more information about an error, try `rustc --explain E0277`.

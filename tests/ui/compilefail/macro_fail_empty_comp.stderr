@@ -1,0 +1,90 @@
+error: Empty expression.
+  --> $DIR/macro_fail_empty_comp.rs:11:5
+   |
+11 |     comp!();   //~ ERROR Empty expression.
+   |     ^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:12:5
+   |
+12 |     comp!{()}; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:13:5
+   |
+13 |     comp!([]); //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:14:5
+   |
+14 |     comp!({}); //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:15:5
+   |
+15 |     comp!(()); //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:17:5
+   |
+17 |     comp!{[]}; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:18:5
+   |
+18 |     comp!{{}}; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:19:5
+   |
+19 |     comp!{()}; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:21:5
+   |
+21 |     comp![[]]; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:22:5
+   |
+22 |     comp![{}]; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_empty_comp.rs:23:5
+   |
+23 |     comp![()]; //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 11 previous errors
+

@@ -1,0 +1,80 @@
+error[E0277]: `std::ops::RangeTo<{integer}>` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:11:21
+   |
+11 |     comp!([for n in ..2 => 0; if true]);
+   |                     ^^^ if you meant to iterate until a value, add a starting value
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeTo<{integer}>`
+   = note: `..end` is a `RangeTo`, which cannot be iterated on; you might have meant to have a bounded `Range`: `0..end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeFull` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:13:21
+   |
+13 |     comp!([for n in .. => 0; if true]);
+   |                     ^^ `std::ops::RangeFull` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeFull`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeToInclusive<{integer}>` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:15:21
+   |
+15 |     comp!([for n in ..=3 => 9]);
+   |                     ^^^^ if you meant to iterate until a value (including it), add a starting value
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeToInclusive<{integer}>`
+   = note: `..=end` is a `RangeToInclusive`, which cannot be iterated on; you might have meant to have a bounded `RangeInclusive`: `0..=end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeTo<{integer}>` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:18:21
+   |
+18 |     comp!({for n in ..2 => 0; if true});
+   |                     ^^^ if you meant to iterate until a value, add a starting value
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeTo<{integer}>`
+   = note: `..end` is a `RangeTo`, which cannot be iterated on; you might have meant to have a bounded `Range`: `0..end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeFull` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:20:21
+   |
+20 |     comp!({for n in .. => 0; if true});
+   |                     ^^ `std::ops::RangeFull` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeFull`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeToInclusive<{integer}>` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:22:21
+   |
+22 |     comp!({for n in ..=3 => 9});
+   |                     ^^^^ if you meant to iterate until a value (including it), add a starting value
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeToInclusive<{integer}>`
+   = note: `..=end` is a `RangeToInclusive`, which cannot be iterated on; you might have meant to have a bounded `RangeInclusive`: `0..=end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeTo<{integer}>` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:25:21
+   |
+25 |     comp!({for n in ..2 => 0, 0; if true});
+   |                     ^^^ if you meant to iterate until a value, add a starting value
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeTo<{integer}>`
+   = note: `..end` is a `RangeTo`, which cannot be iterated on; you might have meant to have a bounded `Range`: `0..end`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error[E0277]: `std::ops::RangeFull` is not an iterator
+  --> $DIR/macro_fail_range_forms.rs:27:21
+   |
+27 |     comp!({for n in .. => 0, 0; if true});
+   |                     ^^ `std::ops::RangeFull` is not an iterator
+   |
+   = help: the trait `std::iter::Iterator` is not implemented for `std::ops::RangeFull`
+   = note: required by `std::iter::IntoIterator::into_iter`
+
+error: aborting due to 8 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

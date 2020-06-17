@@ -20,9 +20,8 @@ fn run_mode(mode: &'static str, custom_dir: Option<&'static str>) {
     compiletest::run_tests(&config);
 }
 
-// List tests run by compiletest_rs
 #[test]
 fn compile_test() {
-    run_mode("compile-fail", None);
+    // ok. only use 'ui' from now on.
     run_mode("ui", None);
 }

@@ -244,6 +244,7 @@ macro_rules! comp {
     // Map comprehension.
     ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
         // Need to bring in the default.
+        use std::iter::FromIterator;
         use std::collections::HashMap;
         use std::ops::Index;
 
@@ -260,7 +261,9 @@ macro_rules! comp {
                 res.insert($($k)+, $($v)+);
             }
         }
-        _mt::<_, _>(&res);
+        // let r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
+        // todo: issues here, can't always deduce types
+        // _mt::<_, _>(&r);
         res
     }};
     // Otras:

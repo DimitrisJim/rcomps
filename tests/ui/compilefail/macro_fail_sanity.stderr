@@ -1,0 +1,41 @@
+error: Unable to parse expression.
+  --> $DIR/macro_fail_sanity.rs:11:5
+   |
+11 |     comp!([20]);                       //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_sanity.rs:12:5
+   |
+12 |     comp!([for n in 1..2 30]);         //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_sanity.rs:16:5
+   |
+16 |     comp!([for n in n]);               //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: Unable to parse expression.
+  --> $DIR/macro_fail_sanity.rs:17:5
+   |
+17 |     comp!([for n in 1..2 => 30; if]);  //~ ERROR Unable to parse expression.
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0425]: cannot find value `n` in this scope
+  --> $DIR/macro_fail_sanity.rs:14:21
+   |
+14 |     comp!([for n in n => n]);          //~ ERROR cannot find value `n` in this scope [E0425]
+   |                     ^ not found in this scope
+
+error: aborting due to 5 previous errors
+
+For more information about this error, try `rustc --explain E0425`.
