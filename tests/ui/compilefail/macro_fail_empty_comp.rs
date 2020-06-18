@@ -9,18 +9,11 @@ use rcomps::comp;
 /// Evaluate all combinations for empty comprehensions.
 fn test_fail_empty_comp(){
     comp!();   //~ ERROR Empty expression.
-    comp!{()}; //~ ERROR Unable to parse expression.
-    comp!([]); //~ ERROR Unable to parse expression.
-    comp!({}); //~ ERROR Unable to parse expression.
+    comp!{};   //~ ERROR Empty expression.
+    comp![];   //~ ERROR Empty expression.
     comp!(()); //~ ERROR Unable to parse expression.
-
-    comp!{[]}; //~ ERROR Unable to parse expression.
-    comp!{{}}; //~ ERROR Unable to parse expression.
-    comp!{()}; //~ ERROR Unable to parse expression.
-
-    comp![[]]; //~ ERROR Unable to parse expression.
-    comp![{}]; //~ ERROR Unable to parse expression.
     comp![()]; //~ ERROR Unable to parse expression.
+    comp!{()}; //~ ERROR Unable to parse expression.
 }
 
 fn main(){}

@@ -270,6 +270,18 @@ macro_rules! __impl_comp {
 ///
 #[macro_export]
 macro_rules! comp {
+    // little rules for empty cases, if needed.
+    ([]) => {
+        Vec::new()
+    };
+    ({}) => {{
+        use std::collections::HashSet;
+        HashSet::new()
+    }};
+    ({:}) => {{
+        use std::collections::HashMap;
+        HashMap::new()
+    }};
     ([$($veccomp:tt)+] $(, $tp:ident)?) => {
         // Vector comprehension.
         $crate::__impl_comp!([$($veccomp)+] $(, $tp)?);

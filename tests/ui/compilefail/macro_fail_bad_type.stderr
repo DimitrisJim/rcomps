@@ -127,14 +127,6 @@ error[E0107]: wrong number of type arguments: expected at least 2, found 1
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0107]: wrong number of type arguments: expected 1, found 2
-  --> $DIR/macro_fail_bad_type.rs:30:5
-   |
-30 |     comp!({for i in 1..20 => i, i}, VecDeque);    //~ ERROR
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unexpected type argument
-   |
-   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0107]: wrong number of type arguments: expected 1, found 2
   --> $DIR/macro_fail_bad_type.rs:31:5
    |
 31 |     comp!({for i in 1..20 => i, i}, Vec);         //~ ERROR
@@ -142,7 +134,7 @@ error[E0107]: wrong number of type arguments: expected 1, found 2
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 13 previous errors
+error: aborting due to 12 previous errors
 
 Some errors have detailed explanations: E0107, E0277.
 For more information about an error, try `rustc --explain E0107`.

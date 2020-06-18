@@ -14,6 +14,14 @@ macro_rules ! create {
     }}
 }
 
+#[test]
+fn test_emtpy(){
+    let u: Vec<i32> = comp!([]);
+    let i: Vec<i32> = comp!{[]};
+    let z: Vec<i32> = comp![[]];
+    assert_eq!(u, i);
+    assert_eq!(i, z);
+}
 
 #[test]
 fn test_vec() {

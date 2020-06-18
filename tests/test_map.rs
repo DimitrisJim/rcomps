@@ -23,6 +23,15 @@ macro_rules ! create {
 }
 
 #[test]
+fn test_emtpy(){
+    let u: HashMap<i32, i32> = comp!({:});
+    let i: HashMap<i32, i32> = comp![{:}];
+    let z: HashMap<i32, i32> = comp!{{:}};
+    assert_eq!(u, i);
+    assert_eq!(i, z);
+}
+
+#[test]
 fn test_hashmap(){
     // create empty set with empty iterator:
     let mut m = comp!({for i in vec![] => i, i});
