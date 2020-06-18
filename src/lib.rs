@@ -59,6 +59,112 @@
 // note: Unfortunately, since procedural function-like macros cannot be used in an
 // expression, we cannot use them. Instead, we'll need to use macro_rules!
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __impl_comp {
+    // note: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
+    // note: Create macro to generate the similar stuff for vec, set, map?
+    // note: We could also just use iterators throughout.
+    // fixme: Any type can be passed as tp, need to restrain these.
+
+    // Internal rules:
+    // ===============
+    //
+    // match_if: Returns true if no condition was passed else the condition.
+    (@match_if ()) => { true };
+    (@match_if $($cond:expr)+) => { $($cond)+ };
+
+    // match_type <type>: Matches ident. If one isn't provided, defaults are
+    // used. If they are, pass them through.
+    (@match_type vec ()) => { Vec<_> };
+    (@match_type vec ($tp:ident)) => { $tp<_> };
+
+    (@match_type set ()) => {
+        HashSet<_>
+    };
+    (@match_type set ($tp:ident)) => { $tp<_> };
+
+    (@match_type map ()) => {
+        HashMap<_, _>
+    };
+    (@match_type map ($tp:ident)) => { $tp<_, _> };
+
+    // Vector comprehension.
+    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ident)?) => {{
+        use std::iter::FromIterator;
+        use std::ops::Index;
+
+        fn _seq<T> (_: &T)
+        where
+            T: Index<usize> {}
+
+        // Iterate through $it and build vector.
+        let mut res = Vec::new();
+        for $fid in $($it)+{
+            // Grab the condition.
+            let cond = $crate::__impl_comp!(@match_if ($($($cond)+)?));
+            if cond {
+                res.push($($target)+);
+            }
+        }
+        let mut r = <$crate::__impl_comp!(@match_type vec ($($tp)?))>::from_iter(res.drain(..));
+        _seq(&r);
+        r
+    }};
+    // Set comprehension.
+    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
+        use std::iter::FromIterator;
+        use std::collections::HashSet;
+        use std::ops::{BitAnd, BitOr, BitXor};
+
+        fn _st<T> (_: &T)
+        where
+            T: BitAnd + BitOr + BitXor {}
+
+
+        // Iterate through $it and build set.
+        let mut res = HashSet::new();
+        for $fid in $($it)+{
+            // Grab the condition.
+            let cond = $crate::__impl_comp!(@match_if ($($($cond)+)?));
+
+            if cond {
+                res.insert($($target)+);
+            }
+        }
+        let mut r = <$crate::__impl_comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
+        _st(&&r);
+        r
+    }};
+    // Map comprehension.
+    ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
+        use std::iter::FromIterator;
+        use std::collections::HashMap;
+        use std::ops::Index;
+
+        fn _mt<'a, T, K: 'a> (_: &T)
+        where
+            T: Index<&'a K> {}
+
+        // Iterate through $it and build map.
+        let mut res = HashMap::new();
+        for $fid in $($it)+{
+            // Grab the condition.
+            let cond = $crate::__impl_comp!(@match_if ($($($cond)+)?));
+            if cond {
+                res.insert($($k)+, $($v)+);
+            }
+        }
+        let r = <$crate::__impl_comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
+        // todo: issues here, can't always deduce types, see commented lines in fail_bad_types
+        // _mt::<_, _>(&r);
+        r
+    }};
+}
+
+
+// Note: An oddity: If we add a comment preceeding the setormapcomp, a test failure occurs.
+// Note: If we remove it, it runs fine. I don't know what's up.
 /// Creates a collection using a comprehension.
 ///
 /// `comp!` implements a comprehension like facility for succinct imperative creation of collections.
@@ -164,109 +270,14 @@
 ///
 #[macro_export]
 macro_rules! comp {
-    // note: Any *other* way to make `HashSet, HashMap` visible? `pub` on use doesn't seem to work.
-    // note: Create macro to generate the similar stuff for vec, set, map?
-    // note: We could also just use iterators throughout.
-    // fixme: Any type can be passed as tp, need to restrain these.
-
-    // Internal rules:
-    // ===============
-    //
-    // match_if: Returns true if no condition was passed else the condition.
-    (@match_if ()) => { true };
-    (@match_if $($cond:expr)+) => { $($cond)+ };
-
-    // match_type <type>: Matches ident. If one isn't provided, defaults are
-    // used. If they are, pass them through.
-    (@match_type vec ()) => { Vec<_> };
-    (@match_type vec ($tp:ident)) => { $tp<_> };
-
-    (@match_type set ()) => {
-        // note: HashSet is brought into scope in the rule.
-        HashSet<_>
+    ([$($veccomp:tt)+] $(, $tp:ident)?) => {
+        // Vector comprehension.
+        $crate::__impl_comp!([$($veccomp)+] $(, $tp)?);
     };
-    (@match_type set ($tp:ident)) => { $tp<_> };
+    ({$($setormapcomp:tt)+} $(, $tp:ident)?) => {
 
-    (@match_type map ()) => {
-        // note: HashMap is brought into scope in the rule.
-        HashMap<_, _>
+        $crate::__impl_comp!({$($setormapcomp)+} $(, $tp)?);
     };
-    (@match_type map ($tp:ident)) => { $tp<_, _> };
-
-    // Vector comprehension.
-    ([for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?] $(, $tp:ident)?) => {{
-        use std::iter::FromIterator;
-        use std::ops::Index;
-
-        fn _seq<T> (_: &T)
-        where
-            T: Index<usize> {}
-
-        // Iterate through $it and build vector.
-        let mut res = Vec::new();
-        for $fid in $($it)+{
-            // Grab the condition.
-            let cond = comp!(@match_if ($($($cond)+)?));
-            if cond {
-                res.push($($target)+);
-            }
-        }
-        let mut r = <comp!(@match_type vec ($($tp)?))>::from_iter(res.drain(..));
-        _seq(&r);
-        r
-    }};
-    // Set comprehension.
-    ({for $fid:ident in $($it:expr)+ => $($target:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
-        // Need to bring in the default.
-        use std::collections::HashSet;
-        use std::ops::{BitAnd, BitOr, BitXor};
-
-        fn _st<T> (_: &T)
-        where
-            T: BitAnd + BitOr + BitXor {}
-
-
-        // Iterate through $it and build set.
-        let mut res = <comp!(@match_type set ($($tp)?))>::new();
-        for $fid in $($it)+{
-            // Grab the condition.
-            let cond = comp!(@match_if ($($($cond)+)?));
-
-            if cond {
-                res.insert($($target)+);
-            }
-        }
-        _st(&&res);
-        res
-        // let mut r = <comp!(@match_type set ($($tp)?))>::from_iter(res.drain());
-        // r
-    }};
-    // Map comprehension.
-    ({for $fid:ident in $($it:expr)+ => $($k:expr)+, $($v:expr)+ $(; if $($cond:expr)+)?} $(, $tp:ident)?) => {{
-        // Need to bring in the default.
-        use std::iter::FromIterator;
-        use std::collections::HashMap;
-        use std::ops::Index;
-
-        fn _mt<'a, T, K: 'a> (_: &T)
-        where
-            T: Index<&'a K> {}
-
-        // Iterate through $it and build map.
-        let mut res = <comp!(@match_type map ($($tp)?))>::new();
-        for $fid in $($it)+{
-            // Grab the condition.
-            let cond = comp!(@match_if ($($($cond)+)?));
-            if cond {
-                res.insert($($k)+, $($v)+);
-            }
-        }
-        // let r = <comp!(@match_type map ($($tp)?))>::from_iter(res.drain());
-        // todo: issues here, can't always deduce types
-        // _mt::<_, _>(&r);
-        res
-    }};
-    // Otras:
     () => {
         compile_error!("Empty expression.");
     };

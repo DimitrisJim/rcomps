@@ -40,104 +40,82 @@ error[E0107]: wrong number of type arguments: expected 2, found 1
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0061]: this function takes 2 arguments but 1 argument was supplied
-  --> $DIR/macro_fail_bad_type.rs:20:5
-   |
-20 |     comp!({for i in 1..20 => i}, Vec);            //~ ERROR
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^-^^^^^^^^
-   |     |                        |
-   |     |                        supplied 1 argument
-   |     expected 2 arguments
-   |
-   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: no implementation for `&std::vec::Vec<_> & &std::vec::Vec<_>`
+error[E0277]: no implementation for `&std::vec::Vec<{integer}> & &std::vec::Vec<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:20:5
    |
 20 |     comp!({for i in 1..20 => i}, Vec);            //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::vec::Vec<_> & &std::vec::Vec<_>`
+   |     no implementation for `&std::vec::Vec<{integer}> & &std::vec::Vec<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitAnd` is not implemented for `&std::vec::Vec<_>`
+   = help: the trait `std::ops::BitAnd` is not implemented for `&std::vec::Vec<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: no implementation for `&std::vec::Vec<_> | &std::vec::Vec<_>`
+error[E0277]: no implementation for `&std::vec::Vec<{integer}> | &std::vec::Vec<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:20:5
    |
 20 |     comp!({for i in 1..20 => i}, Vec);            //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::vec::Vec<_> | &std::vec::Vec<_>`
+   |     no implementation for `&std::vec::Vec<{integer}> | &std::vec::Vec<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitOr` is not implemented for `&std::vec::Vec<_>`
+   = help: the trait `std::ops::BitOr` is not implemented for `&std::vec::Vec<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: no implementation for `&std::vec::Vec<_> ^ &std::vec::Vec<_>`
+error[E0277]: no implementation for `&std::vec::Vec<{integer}> ^ &std::vec::Vec<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:20:5
    |
 20 |     comp!({for i in 1..20 => i}, Vec);            //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::vec::Vec<_> ^ &std::vec::Vec<_>`
+   |     no implementation for `&std::vec::Vec<{integer}> ^ &std::vec::Vec<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitXor` is not implemented for `&std::vec::Vec<_>`
+   = help: the trait `std::ops::BitXor` is not implemented for `&std::vec::Vec<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0061]: this function takes 2 arguments but 1 argument was supplied
-  --> $DIR/macro_fail_bad_type.rs:21:5
-   |
-21 |     comp!({for i in 1..20 => i}, VecDeque);       //~ ERROR
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^-^^^^^^^^^^^^^
-   |     |                        |
-   |     |                        supplied 1 argument
-   |     expected 2 arguments
-   |
-   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: no implementation for `&std::collections::VecDeque<_> & &std::collections::VecDeque<_>`
+error[E0277]: no implementation for `&std::collections::VecDeque<{integer}> & &std::collections::VecDeque<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:21:5
    |
 21 |     comp!({for i in 1..20 => i}, VecDeque);       //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::collections::VecDeque<_> & &std::collections::VecDeque<_>`
+   |     no implementation for `&std::collections::VecDeque<{integer}> & &std::collections::VecDeque<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitAnd` is not implemented for `&std::collections::VecDeque<_>`
+   = help: the trait `std::ops::BitAnd` is not implemented for `&std::collections::VecDeque<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: no implementation for `&std::collections::VecDeque<_> | &std::collections::VecDeque<_>`
+error[E0277]: no implementation for `&std::collections::VecDeque<{integer}> | &std::collections::VecDeque<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:21:5
    |
 21 |     comp!({for i in 1..20 => i}, VecDeque);       //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::collections::VecDeque<_> | &std::collections::VecDeque<_>`
+   |     no implementation for `&std::collections::VecDeque<{integer}> | &std::collections::VecDeque<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitOr` is not implemented for `&std::collections::VecDeque<_>`
+   = help: the trait `std::ops::BitOr` is not implemented for `&std::collections::VecDeque<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0277]: no implementation for `&std::collections::VecDeque<_> ^ &std::collections::VecDeque<_>`
+error[E0277]: no implementation for `&std::collections::VecDeque<{integer}> ^ &std::collections::VecDeque<{integer}>`
   --> $DIR/macro_fail_bad_type.rs:21:5
    |
 21 |     comp!({for i in 1..20 => i}, VecDeque);       //~ ERROR
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |     |
-   |     no implementation for `&std::collections::VecDeque<_> ^ &std::collections::VecDeque<_>`
+   |     no implementation for `&std::collections::VecDeque<{integer}> ^ &std::collections::VecDeque<{integer}>`
    |     required by a bound in this
    |     required by this bound in `test_set_wrong_types::_st`
    |
-   = help: the trait `std::ops::BitXor` is not implemented for `&std::collections::VecDeque<_>`
+   = help: the trait `std::ops::BitXor` is not implemented for `&std::collections::VecDeque<{integer}>`
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0107]: wrong number of type arguments: expected at least 2, found 1
@@ -148,26 +126,23 @@ error[E0107]: wrong number of type arguments: expected at least 2, found 1
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error[E0107]: wrong number of type arguments: expected 2, found 1
-  --> $DIR/macro_fail_bad_type.rs:23:5
+error[E0107]: wrong number of type arguments: expected 1, found 2
+  --> $DIR/macro_fail_bad_type.rs:30:5
    |
-23 |     comp!({for i in 1..20 => i}, BTreeMap);       //~ ERROR
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected 2 type arguments
-   |
-   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0061]: this function takes 1 argument but 2 arguments were supplied
-  --> $DIR/macro_fail_bad_type.rs:28:5
-   |
-28 |     comp!({for i in 1..20 => i, i}, HashSet);     //~ ERROR
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^-^^-^^^^^^^^^^^^
-   |     |                           |
-   |     |                           supplied 2 arguments
-   |     expected 1 argument
+30 |     comp!({for i in 1..20 => i, i}, VecDeque);    //~ ERROR
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unexpected type argument
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: aborting due to 15 previous errors
+error[E0107]: wrong number of type arguments: expected 1, found 2
+  --> $DIR/macro_fail_bad_type.rs:31:5
+   |
+31 |     comp!({for i in 1..20 => i, i}, Vec);         //~ ERROR
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unexpected type argument
+   |
+   = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-Some errors have detailed explanations: E0061, E0107, E0277.
-For more information about an error, try `rustc --explain E0061`.
+error: aborting due to 13 previous errors
+
+Some errors have detailed explanations: E0107, E0277.
+For more information about an error, try `rustc --explain E0107`.

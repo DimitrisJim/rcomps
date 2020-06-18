@@ -16,99 +16,99 @@ error: `self` cannot be a raw identifier
 30 |     comp!({for r#self in 3..6 => 0, 0});    //~ ERROR `self` cannot be a raw identifier
    |                ^^^^^^
 
-error: Unable to parse expression.
+error: no rules expected the token `[`
   --> $DIR/macro_fail_bad_ident.rs:12:5
    |
 12 |     comp!([for 40 in 1..2 => 30]);     //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:13:5
    |
 13 |     comp!({for 40 in 1..2 => 0});      //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:14:5
    |
 14 |     comp!({for 40 in 1..2 => 0, 0});   //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `[`
   --> $DIR/macro_fail_bad_ident.rs:17:5
    |
 17 |     comp!([for (2 > 1) in 1..2 => 20]);     //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:18:5
    |
 18 |     comp!({for (2 > 1) in 1..2 => 20});     //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:19:5
    |
 19 |     comp!({for (2 > 1) in 1..2 => 20, 20}); //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `[`
   --> $DIR/macro_fail_bad_ident.rs:21:5
    |
 21 |     comp!([for c() in 1..2 => 0]);       //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `[`
   --> $DIR/macro_fail_bad_ident.rs:22:5
    |
 22 |     comp!([for (c()) in 1..2 => 0]);     //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:23:5
    |
 23 |     comp!({for c() in 1..2 => 0});       //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:24:5
    |
 24 |     comp!({for (c()) in 1..2 => 0});     //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:25:5
    |
 25 |     comp!({for c() in 1..2 => 0, 0});    //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Unable to parse expression.
+error: no rules expected the token `{`
   --> $DIR/macro_fail_bad_ident.rs:26:5
    |
 26 |     comp!({for (c()) in 1..2 => 0, 0});  //~ ERROR Unable to parse expression.
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no rules expected this token in macro call
    |
    = note: this error originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
 

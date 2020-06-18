@@ -20,15 +20,15 @@ fn test_set_wrong_types(){
     comp!({for i in 1..20 => i}, Vec);            //~ ERROR
     comp!({for i in 1..20 => i}, VecDeque);       //~ ERROR
     comp!({for i in 1..20 => i}, HashMap);        //~ ERROR
-    comp!({for i in 1..20 => i}, BTreeMap);       //~ ERROR
+    // comp!({for i in 1..20 => i}, BTreeMap);    // todo: no stderr generated.
 }
 
 fn test_map_wrong_types(){
     // maps
     comp!({for i in 1..20 => i, i}, HashSet);     //~ ERROR
     // comp!({for i in 1..20 => i, i}, BTreeSet); // todo: no stderr generated.
-    // comp!({for i in 1..20 => i, i}, VecDeque); // todo: no stderr generated.
-    // comp!({for i in 1..20 => i, i}, Vec);      // todo: no stderr generated..
+    comp!({for i in 1..20 => i, i}, VecDeque);    //~ ERROR
+    comp!({for i in 1..20 => i, i}, Vec);         //~ ERROR
 }
 
 fn main(){}
